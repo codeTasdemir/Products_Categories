@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,14 +23,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $products = Product::with('categories')->get();
-        $categories = Category::with('parents')->get();
-
-        $menuItems = [
-            'products' => $products,
-            'categories' => $categories,
-        ];
-
-        View::share('menuItems',$menuItems); 
+        //menu için
+        if (Schema::hasTable('products') && Schema::hasTable('categories')) {
+            $products = Product::with('categories')->get();
+            $categories = Category::with('parents')->get();
+        
+            $menuItems = [
+                'products' => $products,
+                'categories' => $categories,
+            ];
+        
+            View::share('menuItems', $menuItems);
+        }
     }
 }
